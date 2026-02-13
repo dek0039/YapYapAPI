@@ -88,6 +88,7 @@ namespace YapYapAPI.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<ActionResult<ChatMessageDto>> SendMessage([FromBody] CreateChatMessageDto dto)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
@@ -151,11 +152,7 @@ namespace YapYapAPI.Controllers
                 CreatedAt = message.CreatedAt
             };
 
-            return CreatedAtAction(
-                dto.ChatId.HasValue ? nameof(GetChatMessages) : nameof(GetGroupMessages),
-                new { id = dto.ChatId ?? dto.GroupId },
-                messageDto
-            );
+            return Ok(messageDto);
         }
 
         [HttpPut("{id}")]

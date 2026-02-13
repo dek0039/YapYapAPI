@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -44,7 +44,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowWinUI", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
@@ -52,17 +52,34 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-
 var app = builder.Build();
-
-app.UseCors("AllowWinUI");
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+
+    using var reader = new StreamReader(
+        context.Request.Body,
+        encoding: Encoding.UTF8,
+        detectEncodingFromByteOrderMarks: false,
+        leaveOpen: true);
+
+    var body = await reader.ReadToEndAsync();
+    context.Request.Body.Position = 0;
+
+    Console.WriteLine($"➡️ {context.Request.Method} {context.Request.Path}");
+    Console.WriteLine($"📦 Body: {body}");
+
+    await next();
+});
+
 
 app.UseHttpsRedirection();
 

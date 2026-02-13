@@ -19,7 +19,7 @@ namespace YapYapAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
+                [HttpGet]
         public async Task<ActionResult<IEnumerable<FriendDto>>> GetMyFriends()
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
@@ -46,7 +46,7 @@ namespace YapYapAPI.Controllers
             return Ok(friendDtos);
         }
 
-        [HttpGet("{userId}")]
+                [HttpGet("{userId}")]
         public async Task<ActionResult<FriendDto>> CheckFriendship(int userId)
         {
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
@@ -78,7 +78,7 @@ namespace YapYapAPI.Controllers
             return Ok(friendDto);
         }
 
-        [HttpDelete("{friendshipId}")]
+                [HttpDelete("{friendshipId}")]
         public async Task<IActionResult> RemoveFriend(int friendshipId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
@@ -90,7 +90,7 @@ namespace YapYapAPI.Controllers
                 return NotFound(new { message = "Friendship not found" });
             }
 
-            if (friendship.UserOne != userId && friendship.UserTwo != userId)
+                        if (friendship.UserOne != userId && friendship.UserTwo != userId)
             {
                 return Forbid();
             }
